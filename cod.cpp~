@@ -1,0 +1,92 @@
+#include<iostream>
+#include<queue>
+#include<algorithm>
+#include<cstdio>
+#include<vector>
+#include<cstring>
+
+using namespace std ;
+
+int g[ 50 ][ 50 ];
+int d[ 50*50 ];
+int dx[]= {1,-1,0,0};
+int dy[]= {0,0,1,-1};
+
+vector< vector<pair<int,int>  > >  adj;
+void insert( int u, int v, int w ){
+	adj[u].push_back( make_pair( v, w ) ) ;
+}
+
+const int INF = 0x3fffffff;
+
+int bf( int dest ){
+	d[0] = 0;
+	for(int i = 0; i < adj.size() ; i++){
+		for(int u = 0; u < adj.size() ; u++){
+			for(int j = 0; j < adj[u].size(); j++){
+				pair<int,int> v = adj[u][j];
+				d[v.first] = min(d[v.first],d[u] + v.second);
+			}
+		}
+	}
+	int res = d[dest];
+	for(int u = 0; u < adj.size() ; u++){
+		for(int j = 0; j < adj[u].size(); j++){
+			pair<int,int> v = adj[u][j];
+			d[v.first] = min(d[v.first],d[u] + v.second);			
+		}
+	}
+	return d[dest] != res ? -INF : res;
+}
+
+int main(){
+	int n,m,E,x,y,gg;
+	while( scanf("%d%d",&n,&m)){
+		if ( n == 0 && m == 0 ) break;
+		adj = vector<vector<pair<int,int> > > ( n*m );
+		memset( g, 0, sizeof g );
+		for( int i = 0; i < 50*50; i++) d[i] = INF;
+
+		scanf("%d",&gg);
+		for( int i = 0; i < gg; i++){
+			scanf("%d %d",&x,&y);
+			g[x][y] = 1;
+		}
+		scanf("%d",&E);
+		int xx,yy,W;
+		for( int i = 0; i < E; i++ ){
+			scanf("%d%d %d%d %d",&x,&y,&xx,&yy,&W);
+			insert( x * m + y, xx * m + yy , W);
+			g[x][y] = 2;
+		}
+
+		for( int i = 0; i < n; i++){
+			for( int j = 0; j < m; j++){
+				if ( g[i][j] != 0 ) continue;
+				for( int k = 0; k < 4; k++){
+					int x = i + dx[k];
+					int y = j + dy[k];
+					if ( x >= 0 && x < n && y >= 0 && y < m && g[x][y] != 1 ){
+						insert( i * m + j , x * m + y , 1 );
+					}
+				}
+			}
+		}
+		g[n-1][m-1] = 3;
+
+		int xf = n-1,  yf = m-1;
+		int fin  = xf * m + yf;
+
+		int res = bf( fin);
+		if ( res == -INF ) {
+			printf("Never\n");
+		}else if ( res == INF ){
+			printf("Impossible\n");
+		}else {
+			printf("%d\n",res);
+		}
+
+	}
+
+	return 0;
+}

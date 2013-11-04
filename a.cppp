@@ -1,0 +1,31 @@
+#include<iostream>
+#include<cstdio>
+#include<set>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+int main(){
+	char nombre[50]; int edad;
+	
+	// pair < tipo_de_dato, tipo_de_dato > 
+	// imagina que es un struct con  first y second
+	// p.first
+	// p.second
+	// los operadores de comparacion ya estan sobrecargados, es multicriterio, primero el first y luego el second
+	
+	
+	set<pair<char *, int > > S;
+	for( int i = 0; i < 5; i++){
+		cin >> nombre >> edad;
+		S.insert( make_pair( nombre, edad ) );
+	}
+	vector<pair<char*,int>  > v( S.begin(), S.end() );
+	
+	
+	for( int i = 0; i < v.size(); i++){
+		cout << v[i].first << " " << v[i].second << endl;
+	}
+	
+
+}
